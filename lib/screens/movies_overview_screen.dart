@@ -29,8 +29,9 @@ class _MoviesOverviewScreenState extends State<MoviesOverviewScreen> {
   }
 
   ScrollController _scrollController = new ScrollController();
-  int _from = 5;
-  int _to = 10;
+  // int _from = 5;
+  // int _to = 10;
+  int _page = 2;
   bool _isLoop = true;
   @override
   void initState() {
@@ -42,16 +43,17 @@ class _MoviesOverviewScreenState extends State<MoviesOverviewScreen> {
           _isLoop) {
         setState(() {
           Provider.of<Movies>(context, listen: false)
-              .fetchMoviesData(from: _from, to: _to)
+              .fetchMoviesData(page: _page)
               .then((value) {
             setState(() {
-              _from += 5;
-              _to += 5;
-              if (_to > 20) {
-                setState(() {
-                  _isLoop = false;
-                });
-              }
+              _page += 1;
+              // _from += 5;
+              // _to += 5;
+              // if (_to > 20) {
+              //   setState(() {
+              //     _isLoop = false;
+              //   });
+              //   }
             });
           }).catchError((error) {
             _showAlertDialog('check your Internet');
@@ -72,7 +74,7 @@ class _MoviesOverviewScreenState extends State<MoviesOverviewScreen> {
       });
 
       Provider.of<Movies>(context, listen: false)
-          .fetchMoviesData(from: 0, to: 5)
+          .fetchMoviesData(page: 1)
           .then((_) {
         setState(() {
           _isLoading = false;

@@ -33,25 +33,26 @@ class Movies with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchMoviesData({int from, int to}) async {
-    const url =
-        'https://api.themoviedb.org/3/trending/all/day?api_key=51b713587433a8ad90ce37236fa5eca4';
+  Future<void> fetchMoviesData({int page}) async {
+    var url =
+        'https://api.themoviedb.org/3/trending/all/day?api_key=51b713587433a8ad90ce37236fa5eca4&page=$page';
 
     final response = await http.get(url).catchError((error) {
       throw error;
     });
     final extractedData = json.decode(response.body)['results'];
 
-    for (int i = from; i < to; i++) {
+    for (var moviesData in extractedData) {
       _items.add(Movie(
-          name: extractedData[i]['title'] ?? 'null',
-          id: extractedData[i]['id'].toString() ?? 'c1',
-          description: extractedData[i]['overview'] ?? 'null',
-          year: extractedData[i]['release_date'] ?? '2020',
-          type: extractedData[i]['media_type'] ?? 'null',
-          rate: extractedData[i]['vote_average'] ?? 1,
-          imageUrl:
-              'https://image.tmdb.org/t/p/w500${extractedData[i]['poster_path']}'));
+        name: moviesData['title'] ?? 'null',
+        id: moviesData['id'].toString() ?? 'c1',
+        description: moviesData['overview'] ?? 'null',
+        year: moviesData['release_date'] ?? '2020',
+        type: moviesData['media_type'] ?? 'null',
+        rate: moviesData['vote_average'] ?? 1,
+        imageUrl: 'https://image.tmdb.org/t/p/w500${moviesData['poster_path']}' ??
+            'https://cdn3.vectorstock.com/i/1000x1000/30/12/abstract-geometric-background-black-and-white-vector-10383012.jpg',
+      ));
     }
 
     notifyListeners();
